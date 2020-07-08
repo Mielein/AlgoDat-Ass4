@@ -5,6 +5,7 @@
 #include <cmath>
 #include <iterator>
 #include <algorithm>
+#include <limits>
 
 //method to compare points of x coordinate
 int comparePoints_x(point const& a, point const& b){
@@ -86,31 +87,34 @@ std::pair<point,point> find_closest_pair(std::vector<point> x_vec, std::vector<p
     
 }  
 
-void merge(std::vector<point> vec, int p, int r, int q){
-    int n1 = p - q + 2;
-    int n2 = r - q + 1;
+void merge(std::vector<point> vec, int p, int q, int r){
+    int n1 = q - p + 1; //length of subarray A[q+1...r]
+    int n2 = r - q; //length of subarray A[p...q]
     int i,j,k;
 
-    std::vector<point> left_vec{n1};
-    std::vector<point> right_vec{n2};
+    std::vector<point> left_vec(n1+1); //creating array left with length n1+1
+    std::vector<point> right_vec(n2+1);//creating array right with length n1+1
 
-    for(i = 0; i<n1; i++){
-        left_vec[i]= vec[p+i-1];
+    //copies subarray vec[p..q] into left_vec[1..n1]
+    for(i = 0; i<=n1; i++){
+        left_vec[i] = vec[p+i-1];
     }
-    //left_vec[n1] = infinite;
+    //copies subarray vec[q+1..r] into right_vec[1..n2]
     for(j = 0; j<n2; j++){
-        right_vec[i]= vec[q+j];
+        right_vec[j] = vec[q+j];
     }
-    //left_vec[n2] = infinite;
+    //entinels at the ends of the arrays
+    //left_vec[n1+1](std::numeric_limits<int>::max());
+    //right_vec[n2+1](std::numeric_limits<int>::max());
     i = 1;
     j = 1;
     for(k=p;k<=r;k++){
-        if(left_vec[i]. <= right_vec[j]){
-            vec[k]=left_vec[i];
+        if((left_vec[i].x <= right_vec[j].x) && (left_vec[i].y <= right_vec[j].y)){
+            vec[k] = left_vec[i];
             i++;
         }
         else{
-            vec[k]=right_vec[j];
+            vec[k] = right_vec[j];
             j++;
         }
     }
@@ -134,20 +138,17 @@ int main(){
     std::cin>>point_number;
     point p;
     for(int i=0;i<=point_number;i++){
-        point_vec.push_back(p);
         p.x = std::rand()%101;
         p.y = std::rand()%101;
+        point_vec.push_back(p);
     }
 
     for (int i = 0; i < point_vec.size(); i++) {
     std::cout << point_vec[i].x << " | " << point_vec[i].y << std::endl;
     }
 
+    mergeSort(point_vec,1,point_vec.size());
 
-    point p1;
-    point p2;
-    std::pair<point,point> test1{p1,p2};
-    printPointSet(test1);
     
     return 0;
 }
