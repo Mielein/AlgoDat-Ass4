@@ -15,6 +15,7 @@ int comparePoints_x(point const& a, point const& b){
 int comparePoints_y(point const& a, point const& b){
     return a.y - b.y;
 }
+//methods to calculate distance
 float distance(point const& a, point const& b){
     return sqrt(pow(comparePoints_x(a,b),2)+ pow(comparePoints_y(a,b),2));
 }
@@ -27,56 +28,80 @@ void printPointSet(std::pair<point, point> set){
 }
 
 std::pair<point,point> combine(std::vector<point> y_vec, int l_x, std::pair<point,point> left_pair,std::pair<point,point> right_pair){
+    //calculating distances of points
     float d1 = distance(left_pair.first,left_pair.second);
     float d2 = distance(right_pair.first,right_pair.second);
     float d;
     std::pair<point,point> combined_pair;
+    //if distance of left_pair is larger than right_pair
     if(d1<d2){
+        //new set ist left pair
         combined_pair = left_pair;
+        //distance of combined pair is distance of left_pair
         d = d1;
     }
     else{
+        //else combined_pair is right_pair
         combined_pair = right_pair;
+        //gets distance of right_pair
         d = d2;
     }
+    //creating Y’ -> empty array(vector)
     std::vector<point> y_vec2;
     for(int i = 0; i<=y_vec.size(); i++){
+        //for each point in y_vec
         if(l_x-d <= y_vec[i].x<l_x+d){
+            //add y_vec at position i in y_vec2
             y_vec2.push_back(y_vec[i]);
         }
     }
-    //vllt i=1 auch j
+    //iterating through y_vec2
     for(int i=0; i<=y_vec2.size();i++){
         int j = 1;
+        //as long as size of y_vec >= j
+        //and y_vec2 >= i+j
         while (j<=y_vec.size() && (i+j)<=y_vec2.size()){
+            //calculate distance of y_vec2 at pos. i and y_vec2 at pos. i+j
             float d3 = distance(y_vec2[i],y_vec2[i+j]);
+            //if dist. of left_pair is smaller than right_pair
             if(d1<d){
+                //combined_pair is new set of points
                 combined_pair = std::pair<point, point>(y_vec2[i],y_vec2[i+j]);
                 d=d1;
             }
+            //increase j
             j++;
         }
     }
     return combined_pair;
 }
-
+//method to find closest pair
 std::pair<point,point> find_closest_pair(std::vector<point> x_vec, std::vector<point> y_vec){
+    //m = median of array
     int m = floor(x_vec.size()/2);
     int l_x=(x_vec[m].x+ x_vec[m+1].x)/2;
+    //creating two empty subarrays
     std::vector<point> x_lvec;
     std::vector<point> x_rvec;
+    //push elements into left array that are in the first half of x_vec
     for(int i=0; i<m; i++){
         x_lvec.push_back(x_vec[i]);
     }
+    //push second half
     for(int j = m+1; j<x_vec.size();j++){
         x_rvec.push_back(x_vec[j]);
     }
+    //recursive call of find closest_pair
+    //for left and right side
     std::pair<point,point> left_pair = find_closest_pair(x_lvec,y_vec);
     std::pair<point,point> right_pair = find_closest_pair(x_rvec,y_vec);
+    //combine to subarrays
     std::pair<point,point> combined_pair = combine(y_vec, l_x,left_pair,right_pair);
+    //calculating distances
     float d1 = distance(left_pair.first,left_pair.second);
     float d2 = distance(right_pair.first,right_pair.second);
     float d3 = distance(combined_pair.first,combined_pair.second);
+    //comparing distances and returning the closest pair
     if(d1<=d2 && d1<=d3){
         return left_pair;
     }
@@ -123,8 +148,10 @@ void merge(std::vector<point> vec, int p, int q, int r){
 void mergeSort(std::vector<point> vec, int p, int r){
     if(p < r){
         int q = ((p+r)/2);
+        //recursive call
         mergeSort(vec,p,q);
         mergeSort(vec,q+1,r);
+        //call mergesort
         merge(vec, p, r, q);
     }
 }
@@ -147,7 +174,11 @@ int main(){
     std::cout << point_vec[i].x << " | " << point_vec[i].y << std::endl;
     }
 
-    mergeSort(point_vec,1,point_vec.size());
+    /* mergeSort(point_vec,1,point_vec.size()); */
+    std::vector<point> sort_x{point_vec};
+    std::vector<point> sort_y{point_vec};
+    auto sorting_x = [](point p1, point p2)-> bool {return p1.x < p2.x;};
+    auto sorting_y = [](point p1, point p2)-> bool {return p1.y < p2.y;};
 
     
     return 0;
