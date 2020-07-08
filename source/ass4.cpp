@@ -18,6 +18,13 @@ float distance(point const& a, point const& b){
     return sqrt(pow(comparePoints_x(a,b),2)+ pow(comparePoints_y(a,b),2));
 }
 
+void printPointSet(std::pair<point, point> set){
+    std::cout<<"the set of points contains the first point"<<std::endl;
+    std::cout<<" with x coordinate: "<<set.first.x<<" and y coordinate: "<<set.first.y<<std::endl;
+    std::cout<<"and the second point"<<std::endl;
+    std::cout<<" with x coordinate: "<<set.second.x<<" and y coordinate: "<<set.second.y<<std::endl;
+}
+
 std::pair<point,point> combine(std::vector<point> y_vec, int l_x, std::pair<point,point> left_pair,std::pair<point,point> right_pair){
     float d1 = distance(left_pair.first,left_pair.second);
     float d2 = distance(right_pair.first,right_pair.second);
@@ -79,16 +86,13 @@ std::pair<point,point> find_closest_pair(std::vector<point> x_vec, std::vector<p
     
 }  
 
-
-
-
 void merge(std::vector<point> vec, int p, int r, int q){
     int n1 = p - q + 2;
     int n2 = r - q + 1;
     int i,j,k;
 
-    std::vector<int> left_vec{n1};
-    std::vector<int> right_vec{n2};
+    std::vector<point> left_vec{n1};
+    std::vector<point> right_vec{n2};
 
     for(i = 0; i<n1; i++){
         left_vec[i]= vec[p+i-1];
@@ -101,7 +105,7 @@ void merge(std::vector<point> vec, int p, int r, int q){
     i = 1;
     j = 1;
     for(k=p;k<=r;k++){
-        if(left_vec[i] <= right_vec[i]){
+        if(left_vec[i]. <= right_vec[j]){
             vec[k]=left_vec[i];
             i++;
         }
@@ -121,26 +125,29 @@ void mergeSort(std::vector<point> vec, int p, int r){
     }
 }
 
+
+
 int main(){
+    std::cout<<"how many points would you like in your array?"<<std::endl;
+    int point_number;
+    std::vector<point> point_vec;
+    std::cin>>point_number;
+    point p;
+    for(int i=0;i<=point_number;i++){
+        point_vec.push_back(p);
+        p.x = std::rand()%101;
+        p.y = std::rand()%101;
+    }
+
+    for (int i = 0; i < point_vec.size(); i++) {
+    std::cout << point_vec[i].x << " | " << point_vec[i].y << std::endl;
+    }
+
 
     point p1;
     point p2;
-    point p3;
-    point p4;
-    point p5;
-    point p6;
-    point p7;
- 
-    std::vector<point> test{p1, p2, p3, p4, p5, p6, p7};
-
-
-    for (int i = 0; i < test.size(); i++) {
-        std::cout << test[i].x << " | " << test[i].y << std::endl;
-    }
-
-    fo
-
-    
+    std::pair<point,point> test1{p1,p2};
+    printPointSet(test1);
     
     return 0;
 }
