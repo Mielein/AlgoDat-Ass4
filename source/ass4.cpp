@@ -8,17 +8,9 @@
 #include <list>
 #include <limits>
 
-//method to compare points of x coordinate
-int comparePoints_x(point const& a, point const& b){
-    return a.x - b.x;
-}
-//method to compare points of y coordinate
-int comparePoints_y(point const& a, point const& b){
-    return a.y - b.y;
-}
 //methods to calculate distance
 float distance(point const& a, point const& b){
-    return sqrt(pow(comparePoints_x(a,b),2)+ pow(comparePoints_y(a,b),2));
+    return sqrt((a.x - b.x)*(a.x - b.x))+ ((a.y - b.y)*(a.y - b.y));
 }
 
 void printPointSet(std::pair<point, point> set){
@@ -148,11 +140,11 @@ void merge_x(std::vector<point> vec, int p, int q, int r){
     std::vector<point> right_vec(n2 + 1);//creating array right with length n1+1
 
     //copies subarray vec[p..q] into left_vec[1..n1]
-    for(i = 0; i <= n1; i++){
+    for(i = 0; i < left_vec.size(); i++){
         left_vec[i] = vec[p + i - 1];
     }
     //copies subarray vec[q+1..r] into right_vec[1..n2]
-    for(j = 0; j < n2; j++){
+    for(j = 0; j < right_vec.size(); j++){
         right_vec[j] = vec[q + j];
     }
     //entinels at the ends of the arrays
@@ -160,8 +152,10 @@ void merge_x(std::vector<point> vec, int p, int q, int r){
     //right_vec[n2 + 1](std::numeric_limits<int>::max());
     i = 1;
     j = 1;
-    for(k=p; k<=r; k++){
-        if((left_vec[i].x <= right_vec[j].x) && (left_vec[i].y <= right_vec[j].y)){
+    /* k = p; */
+   for(k=p; k<=r; k++){ 
+   /* while (i<n1 && j<n2){ */
+        if((left_vec[i].x <= right_vec[j].x)){
             vec[k] = left_vec[i];
             i++;
         }
@@ -169,19 +163,32 @@ void merge_x(std::vector<point> vec, int p, int q, int r){
             vec[k] = right_vec[j];
             j++;
         }
+/*         k++; */
     }
+/*     //Copy the remaining elements of left_vec if left
+    while (i < n1) { 
+        vec[k] = left_vec[i]; 
+        i++; 
+        k++; 
+    } 
+    //Copy the remaining elements of left_vec if left
+    while (j < n2) { 
+        vec[k] = right_vec[j]; 
+        j++; 
+        k++; 
+    } */
 }
 
 //merge sort and merge funktion to sort a vector of points by the y value
 //mergesort method
 void mergeSort_x(std::vector<point> vec, int p, int r){
     if(p < r){
-        int q = ((p+r)/2);
+        int q = floor((p+r)/2);
         //recursive call
         mergeSort_x(vec,p,q);
         mergeSort_x(vec,q+1,r);
         //call mergesort
-        merge_x(vec, p, r, q);
+        merge_x(vec, p, q, r);
     }
 }
 
@@ -190,33 +197,49 @@ void merge_y(std::vector<point> vec, int p, int q, int r) {
     int n2 = r - q; //length of subarray A[p...q]
     int i, j, k;
 
-    std::vector<point> left_vec(n1 + 1); //creating array left with length n1+1
-    std::vector<point> right_vec(n2 + 1);//creating array right with length n1+1
+    std::vector<point> left_vec(n1+1); //creating array left with length n1+1
+    std::vector<point> right_vec(n2+1);//creating array right with length n1+1
 
     //copies subarray vec[p..q] into left_vec[1..n1]
     for (i = 0; i <= n1; i++) {
-        left_vec[i] = vec[p + i - 1];
+        left_vec.at(i) = vec.at(p+i-1);
     }
     //copies subarray vec[q+1..r] into right_vec[1..n2]
     for (j = 0; j < n2; j++) {
-        right_vec[j] = vec[q + j];
+        right_vec.at(j) = vec.at(q+j);
     }
     //entinels at the ends of the arrays
     //left_vec[n1 + 1](std::numeric_limits<int>::max());
     //right_vec[n2 + 1](std::numeric_limits<int>::max());
     i = 1;
     j = 1;
-    for (k = p; k <= r; k++) {
-        if ((left_vec[i].x <= right_vec[j].x) && (left_vec[i].y <= right_vec[j].y)) {
+    /* k=p; */
+    for(k=p; k<=r; k++){ 
+    /* while (i<n1 && j<n2) { */
+        if ((left_vec[i].y <= right_vec[j].y)) {
             vec[k] = left_vec[i];
             i++;
         }
-        else {
+        else{
             vec[k] = right_vec[j];
             j++;
         }
+        /* k++; */
     }
-}
+    /* //Copy the remaining elements of left_vec if left
+    while (i < n1) { 
+        vec[k] = left_vec[i]; 
+        i++; 
+        k++; 
+    } 
+    //Copy the remaining elements of left_vec if left
+    while (j < n2) { 
+        vec[k] = right_vec[j]; 
+        j++; 
+        k++; 
+    }  */
+} 
+
 //mergesort method
 void mergeSort_y(std::vector<point> vec, int p, int r) {
     if (p < r) {
@@ -231,7 +254,8 @@ void mergeSort_y(std::vector<point> vec, int p, int r) {
 
 
 int main(){
-    std::cout<<"how many points would you like in your array?"<<std::endl;
+//cin
+/*     std::cout<<"how many points would you like in your array?"<<std::endl;
     int point_number;
     std::vector<point> point_vec;
     std::cin>>point_number;
@@ -240,17 +264,28 @@ int main(){
         p.x = std::rand()%101;
         p.y = std::rand()%101;
         point_vec.push_back(p);
-    }
-    
+    } */
+    point p1,p2,p3,p4,p5;
+    std::vector<point> point_vec{p1,p2,p3,p4,p5};
     std::cout << "This is your array of random Points:" << std::endl;
     for (int i = 0; i < point_vec.size(); i++) {
     std::cout << point_vec[i].x << " | " << point_vec[i].y << std::endl;
     }
 
+    std::vector<point> point_vec_x{point_vec};
+    std::vector<point> point_vec_y{point_vec};
+    std::cout<<point_vec_x.size()<<std::endl;
+
+    mergeSort_x(point_vec_x,1,point_vec_x.size());
+    mergeSort_y(point_vec_y,1,point_vec_x.size());
+
+
+    /* printPointSet(find_closest_pair(point_vec_x,point_vec_y)); */
+
 //tried doing our own sorting method since mergesort gives a stackoverflow
 //turns out find_closest_points also gives a stackoverflow
 //and i know..no lists..it was just a test  
-    std::list<point> pointList_x;
+/*  std::list<point> pointList_x;
     std::list<point> pointList_y;
 
     auto sorting_x = [](point p1, point p2)-> bool {return p1.x < p2.x;};
@@ -266,10 +301,10 @@ int main(){
     std::vector<point> point_vec_y;
 
     std::copy(pointList_x.begin(),pointList_x.end(),std::back_inserter(point_vec_x));
-    std::copy(pointList_y.begin(),pointList_y.end(),std::back_inserter(point_vec_y)); */
+    std::copy(pointList_y.begin(),pointList_y.end(),std::back_inserter(point_vec_y)); 
 
     mergeSort_x(point_vec,1,point_vec.size());
-    printPointSet(find_closest_pair(point_vec_x,point_vec_y));            
+    printPointSet(find_closest_pair(point_vec_x,point_vec_y));    */         
 
     return 0;
 }
