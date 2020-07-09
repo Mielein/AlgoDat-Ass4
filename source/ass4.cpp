@@ -28,6 +28,24 @@ void printPointSet(std::pair<point, point> set){
     std::cout<<" with x coordinate: "<<set.second.x<<" and y coordinate: "<<set.second.y<<std::endl;
 }
 
+//naive algorithm
+std::pair<point,point> naive_alg(std::vector<point> vec){
+    if(vec.size() < 2){
+        throw "try with more points";
+    }
+    auto pair = std::make_pair(vec[0],vec[1]);
+    for(int i = 0;i<vec.size();i++){
+        
+        for(int j = i+1; i<vec.size();j++){
+            std::pair<point,point> closest;
+            if(distance(vec[i],vec[j]) < distance(pair.first,pair.second)){
+                pair = std::make_pair(vec[i],vec[j]);
+            }
+        }
+    }
+    return pair;
+}
+
 std::pair<point,point> combine(std::vector<point> y_vec, int l_x, std::pair<point,point> left_pair,std::pair<point,point> right_pair){
     //calculating distances of points
     float d1 = distance(left_pair.first,left_pair.second);
@@ -78,6 +96,13 @@ std::pair<point,point> combine(std::vector<point> y_vec, int l_x, std::pair<poin
 }
 //method to find closest pair
 std::pair<point,point> find_closest_pair(std::vector<point> x_vec, std::vector<point> y_vec){
+    if(x_vec.size()==2){
+        std::pair<point,point> closest(x_vec[0],x_vec[1]);
+        return closest;
+    }
+    if(x_vec.size()==3){
+        return naive_alg(x_vec);
+    }
     //m = median of array
     int m = floor(x_vec.size()/2);
     int l_x=(x_vec[m].x+ x_vec[m+1].x)/2;
@@ -222,17 +247,30 @@ int main(){
     std::cout << point_vec[i].x << " | " << point_vec[i].y << std::endl;
     }
 
-    
-    std::vector<point> sort_x{point_vec};
-    std::vector<point> sort_y{point_vec};
-    //mergeSort_x(sort_x, 1, sort_x.size());                
-    //mergeSort_y(sort_y, 1, sort_y.size());
+//tried doing our own sorting method since mergesort gives a stackoverflow
+//turns out find_closest_points also gives a stackoverflow
+//and i know..no lists..it was just a test  
+    std::list<point> pointList_x;
+    std::list<point> pointList_y;
 
     auto sorting_x = [](point p1, point p2)-> bool {return p1.x < p2.x;};
     auto sorting_y = [](point p1, point p2)-> bool {return p1.y < p2.y;};
 
-    //find_closest_pair(sort_x, sort_y);
-    
+    std::copy(point_vec.begin(),point_vec.end(),std::back_inserter(pointList_x));
+    std::copy(point_vec.begin(),point_vec.end(),std::back_inserter(pointList_y));
+
+    pointList_x.sort(sorting_x);
+    pointList_y.sort(sorting_y);
+
+    std::vector<point> point_vec_x;
+    std::vector<point> point_vec_y;
+
+    std::copy(pointList_x.begin(),pointList_x.end(),std::back_inserter(point_vec_x));
+    std::copy(pointList_y.begin(),pointList_y.end(),std::back_inserter(point_vec_y)); */
+
+    mergeSort_x(point_vec,1,point_vec.size());
+    printPointSet(find_closest_pair(point_vec_x,point_vec_y));            
 
     return 0;
 }
+//Stackoverflow :/
